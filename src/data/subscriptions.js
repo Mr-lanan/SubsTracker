@@ -411,17 +411,21 @@ async function manualRenewSubscription(id, env, options = {}) {
     const note = options.note || '手动续订';
     const mode = subscription.subscriptionMode || 'cycle';
 
-    let newStartDate;
-    const currentExpiryDate = new Date(subscription.expiryDate);
+let newStartDate;
+const currentExpiryDate = new Date(subscription.expiryDate);
 
-    if (mode === 'reset') {
-      newStartDate = new Date(paymentDate);
-    } else {
-      newStartDate =
-        currentExpiryDate.getTime() > paymentDate.getTime()
-          ? new Date(currentExpiryDate)
-          : new Date(paymentDate);
-    }
+// 如果开启了“从今天开始计算”，强制使用 paymentDate（即今天）
+if (subscription.useTodayAsBase === true) {
+  newStartDate = new Date(paymentDate);
+} else if (mode === 'reset') {
+  newStartDate = new Date(paymentDate);
+} else {
+  // cycle 模式：取到期日与支付日较晚者
+  newStartDate =
+    currentExpiryDate.getTime() > paymentDate.getTime()
+      ? new Date(currentExpiryDate)
+      : new Date(paymentDate);
+}
 
     let newExpiryDate;
     if (subscription.useLunar) {
