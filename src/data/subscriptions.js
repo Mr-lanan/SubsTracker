@@ -93,7 +93,11 @@ async function getAllSubscriptions(env) {
  * @param {any} env
  */
 async function getSubscription(id, env) {
-  return subRepo.getById(env, id);
+  const raw = await subRepo.getById(env, id);
+  if (raw) {
+    raw.useTodayAsBase = raw.useTodayAsBase ?? false;  // 补默认值
+  }
+  return raw;
 }
 
 /**
