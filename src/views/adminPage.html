@@ -3313,6 +3313,7 @@ const lunarBiz = {
               : '0 = 仅在到期时提醒';
           }
           document.getElementById('useLunar').checked = !!subscription.useLunar;
+          document.getElementById('useTodayAsBase').checked = subscription.useTodayAsBase || false;
           
           clearFieldErrors();
           loadLunarPreference();
